@@ -4,15 +4,13 @@ import food.data.models.Products
 import food.db.DbSettings.dbQuery
 import food.data.tables.User
 import food.data.tables.Users
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.*
 
 class UserService{
 
 
 
-    suspend fun getAllCustomers():List<User?> = dbQuery {
+    suspend fun getAllUsers():List<User?> = dbQuery {
         Users.selectAll().map { rowToUser(it) }
     }
 
@@ -25,6 +23,25 @@ class UserService{
                 ur[Users.address] = user.address
                 ur[Users.city] = user.city
             }
+        }
+    }
+    suspend fun getUserById(id: Int): User? = dbQuery {
+        Users.select {
+            (Users.id eq (id))
+        }.mapNotNull { rowToUser(it) }
+            .singleOrNull()
+    }
+
+    suspend fun deleteUserById(id: Int) = dbQuery {
+        Users.deleteWhere { Users.id eq id } > 0
+    }
+
+    suspend fun updateUserById(user: User,id:Int) = dbQuery {
+        Users.update({Users.id eq id}){
+            it[firstName] = user.firstName
+            it[lastName] = user.lastName
+            it[address] = user.address
+            it[city]= user.city
         }
     }
 

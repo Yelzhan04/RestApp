@@ -15,7 +15,9 @@ class ProductsEntity(id: EntityID<Int>): IntEntity(id){
     companion object:IntEntityClass<ProductsEntity>(Product)
     val title by Product.title
     val description by Product.description
-    override fun toString(): String = "Product($title,$description)"
+    val orders by OrdersEntity referrersOn Orders.product
+
+    override fun toString(): String = "Product($title,$description,$orders)"
 
 
 

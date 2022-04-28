@@ -1,6 +1,7 @@
 package food.controller
 
 import food.data.models.Order
+import food.data.models.Orders.product
 import food.data.models.Product
 import food.data.models.Products
 import food.service.OrderService
@@ -21,9 +22,38 @@ fun Route.orderRoute(){
             call.response.status(HttpStatusCode.OK)
             call.respond(mapOf("Orders" to allOrder))
         }
+
         post {
             val addOrder = call.receive<Order>()
-            orderControl.addOrders(addOrder, Product)
+            orderControl.addOrders(addOrder)
         }
+
+        get("{id}") {
+
+            val order_id = orderControl.getOrderById(call.parameters["id"]?.toInt()!!)
+            if (order_id== null) {
+                call.respond(HttpStatusCode.NotFound)
+            } else {
+                call.respond(order_id)
+            }
+        }
+
+        delete("{id}") {
+            val removed = orderControl.deleteOrderById(call.parameters["id"]?.toInt()!!)
+            if (removed){
+                call.respond(HttpStatusCode.OK)
+            }
+            else{
+                call.respond(HttpStatusCode.NotFound)
+            }
+        }
+
+        put("{id}"){
+            val id =  call.parameters["id"]?.toInt()!!
+            val order= call.receive<Order>()
+            orderControl.updateOrderById(order,id)
+            call.respond(HttpStatusCode.OK)
+        }
+
     }
 }

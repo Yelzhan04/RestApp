@@ -3,10 +3,14 @@ package food.service
 
 import food.data.models.Product
 import food.data.models.Products
+import food.data.tables.User
+import food.data.tables.Users
+import food.data.tables.Users.address
+import food.data.tables.Users.city
+import food.data.tables.Users.lastName
 import food.db.DbSettings.dbQuery
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
 class ProductService {
 
@@ -24,6 +28,26 @@ class ProductService {
             }
         }
     }
+
+    suspend fun getProductById(id: Int): Products? = dbQuery {
+        Product.select {
+            (Product.id eq (id))
+        }.mapNotNull { rowToProduct(it) }
+            .singleOrNull()
+    }
+
+    suspend fun deleteProductById(id: Int) = dbQuery {
+        Product.deleteWhere { Product.id eq id } > 0
+    }
+
+    suspend fun updateProductById(product: Products,id:Int) = dbQuery {
+        Product.update({Product.id eq id}){
+            it[title] = product.title
+            it[description] = product.description
+        }
+    }
+
+
 
 
     private fun rowToProduct(row: ResultRow?):Products?{

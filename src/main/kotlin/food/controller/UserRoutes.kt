@@ -12,7 +12,7 @@ val userControl = UserService()
 fun Route.userRoutes(){
     route("api/customers"){
         get {
-            val allCustomers = userControl.getAllCustomers()
+            val allCustomers = userControl.getAllUsers()
             call.response.status(HttpStatusCode.OK)
             call.respond(mapOf("Customers" to allCustomers))
         }
@@ -20,7 +20,35 @@ fun Route.userRoutes(){
             val addCustomer = call.receive<User>()
             userControl.addUser(addCustomer)
             call.respond(HttpStatusCode.Accepted )
-            val widget = call.receive<NewWidget>()
         }
+
+        get("{id}") {
+
+            val customer_id = userControl.getUserById(call.parameters["id"]?.toInt()!!)
+            if (customer_id == null) {
+                call.respond(HttpStatusCode.NotFound)
+            } else {
+                call.respond(customer_id)
+            }
+        }
+
+        delete("{id}") {
+            val removed = userControl.deleteUserById(call.parameters["id"]?.toInt()!!)
+            if (removed){
+                call.respond(HttpStatusCode.OK)
+            }
+            else{
+                call.respond(HttpStatusCode.NotFound)
+            }
+        }
+
+        put("{id}"){
+            val id =  call.parameters["id"]?.toInt()!!
+            val users= call.receive<User>()
+            userControl.updateUserById(users,id)
+            call.respond(HttpStatusCode.OK)
+        }
+
+
     }
 }

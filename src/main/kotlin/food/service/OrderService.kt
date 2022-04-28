@@ -2,16 +2,14 @@ package food.service
 
 import food.data.models.Order
 import food.data.models.Orders
+import food.data.models.Orders.product
 import food.data.models.Product
+import food.data.models.Product.description
+import food.data.models.Product.title
 import food.data.models.Products
-import food.data.tables.User
-import food.data.tables.Users
-import food.db.DbSettings
 import food.db.DbSettings.dbQuery
-import org.jetbrains.exposed.dao.id.EntityID
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
 class OrderService {
 
@@ -19,13 +17,31 @@ class OrderService {
         Orders.selectAll().map { rowToOrder(it) }
     }
 
-    suspend fun addOrders(order: Order,id:Product){
+    suspend fun addOrders(order: Order){
         dbQuery{
             Orders.insert { or ->
                 or[Orders.id] = order.id
-                or[Orders.product] = id.id
+                or[Orders.product] = order.product
 
             }
+
+        }
+    }
+
+    suspend fun getOrderById(id: Int): Order? = dbQuery {
+        Orders.select {
+            (Orders.id eq (id))
+        }.mapNotNull { rowToOrder(it) }
+            .singleOrNull()
+    }
+
+    suspend fun deleteOrderById(id: Int) = dbQuery {
+        Orders.deleteWhere { Orders.id eq id } > 0
+    }
+
+    suspend fun updateOrderById(order: Order, id:Int) = dbQuery {
+        Orders.update({ Orders.id eq id}){
+            it[product] =order.id
 
         }
     }
@@ -36,7 +52,7 @@ class OrderService {
         }
         return Order(
             id = row[Orders.id].value,
-            product = row[Orders.product].toString()
+            product = row[Orders.product].value
         )
     }
 }

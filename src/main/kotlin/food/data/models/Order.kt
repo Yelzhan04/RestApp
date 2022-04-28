@@ -17,6 +17,6 @@ class OrdersEntity(id:EntityID<Int>):IntEntity(id){
 @Serializable
 data class Order(
     val id:Int,
-    val product:String
+    val product: Int
 
 )

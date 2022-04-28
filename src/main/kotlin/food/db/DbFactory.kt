@@ -25,6 +25,7 @@ object DbSettings {
         transaction {
             addLogger(StdOutSqlLogger)
             SchemaUtils.create(Users,Product,Product_Orders,Orders)
+            commit()
         }
     }
 
