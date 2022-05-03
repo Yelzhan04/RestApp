@@ -17,7 +17,7 @@ object Product_Orders: IntIdTable("Product_Order"){
     val order_id = reference("Order_Id",Orders)
 }
 class Product_OrdersEntity(id: EntityID<Int>): IntEntity(id){
-    companion object:IntEntityClass<OrdersEntity>(Product_Orders)
+    companion object:IntEntityClass<Product_OrdersEntity>(Product_Orders)
     var customer_id by UserEntity referencedOn Product_Orders.customer_id
     var order_id by OrdersEntity referencedOn Product_Orders.order_id
 

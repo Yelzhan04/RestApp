@@ -1,6 +1,7 @@
 package food.plugins
 
 import food.controller.orderRoute
+import food.controller.productOrderRoutes
 import food.controller.productRoutes
 import food.controller.userRoutes
 import io.ktor.routing.*
@@ -16,6 +17,7 @@ fun Application.configureRouting() {
         userRoutes()
         productRoutes()
         orderRoute()
+        productOrderRoutes()
 
     }
 }
