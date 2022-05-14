@@ -3,14 +3,8 @@ package food.service
 
 import food.data.models.Product
 import food.data.models.Products
-import food.data.tables.User
-import food.data.tables.Users
-import food.data.tables.Users.address
-import food.data.tables.Users.city
-import food.data.tables.Users.lastName
 import food.db.DbSettings.dbQuery
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
 class ProductService {
 
@@ -24,6 +18,7 @@ class ProductService {
                 pr[Product.id] = products.id
                 pr[Product.title] = products.title
                 pr[Product.description] = products.description
+                pr[Product.price] = products.price
 
             }
         }
@@ -44,8 +39,10 @@ class ProductService {
         Product.update({Product.id eq id}){
             it[title] = product.title
             it[description] = product.description
+            it[price] = product.price
         }
     }
+
 
 
 
@@ -57,7 +54,9 @@ class ProductService {
         return Products(
             id = row[Product.id].value,
             title = row[Product.title] ,
-            description = row[Product.description]
+            description = row[Product.description],
+            price = row[Product.price]
         )
     }
 }
+

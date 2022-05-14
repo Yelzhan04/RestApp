@@ -1,6 +1,5 @@
 package food.service
-import food.data.models.Product
-import food.data.models.Products
+
 import food.db.DbSettings.dbQuery
 import food.data.tables.User
 import food.data.tables.Users
@@ -17,7 +16,6 @@ class UserService{
     suspend fun addUser(user: User){
         dbQuery {
             Users.insert { ur->
-                ur[Users.id] = user.id
                 ur[Users.firstName] = user.firstName
                 ur[Users.lastName] = user.lastName
                 ur[Users.address] = user.address

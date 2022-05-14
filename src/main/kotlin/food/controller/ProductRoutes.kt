@@ -1,8 +1,6 @@
 package food.controller
 
-import food.data.models.Product_Orders.customer_id
 import food.data.models.Products
-import food.data.tables.User
 import food.service.ProductService
 import io.ktor.application.*
 import io.ktor.http.*
@@ -25,7 +23,6 @@ fun Route.productRoutes(){
             productControl.addProducts(addProduct)
             call.respond(HttpStatusCode.Accepted )
         }
-
         get("{id}") {
 
             val product_id = productControl.getProductById(call.parameters["id"]?.toInt()!!)

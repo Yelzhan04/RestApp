@@ -2,14 +2,11 @@ package food.service
 
 import food.data.models.Order
 import food.data.models.Orders
-import food.data.models.Orders.product
-import food.data.models.Product
-import food.data.models.Product.description
-import food.data.models.Product.title
-import food.data.models.Products
+
 import food.db.DbSettings.dbQuery
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 class OrderService {
 
@@ -20,9 +17,10 @@ class OrderService {
     suspend fun addOrders(order: Order){
         dbQuery{
             Orders.insert { or ->
-                or[Orders.id] = order.id
-                or[Orders.product] = order.product
-
+                or[Orders.userID] = order.userId
+                or[Orders.totalPrice] = order.totalPrice
+                or[Orders.productQuantity] = order.productQuantity
+                or[Orders.orderDate] = LocalDateTime.now()
             }
 
         }
@@ -41,7 +39,6 @@ class OrderService {
 
     suspend fun updateOrderById(order: Order, id:Int) = dbQuery {
         Orders.update({ Orders.id eq id}){
-            it[product] =order.id
 
         }
     }
@@ -52,7 +49,14 @@ class OrderService {
         }
         return Order(
             id = row[Orders.id].value,
-            product = row[Orders.product].value
-        )
+            userId = row[Orders.userID].value,
+            totalPrice = row[Orders.totalPrice],
+            productQuantity = row[Orders.productQuantity],
+            orderDate = row[Orders.orderDate].getLong(),
+            )
     }
+    fun LocalDateTime.getLong() =
+        this.atZone(ZoneOffset.UTC)?.toInstant()?.toEpochMilli()
+
 }
+

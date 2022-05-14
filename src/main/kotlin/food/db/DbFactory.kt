@@ -3,7 +3,7 @@ package food.db
 import com.typesafe.config.ConfigFactory
 import food.data.models.Orders
 import food.data.models.Product
-import food.data.models.Product_Orders
+import food.data.models.OrderDetail
 import food.data.tables.Users
 import io.ktor.config.*
 import kotlinx.coroutines.Dispatchers
@@ -24,8 +24,18 @@ object DbSettings {
         pgConnection()
         transaction {
             addLogger(StdOutSqlLogger)
-            SchemaUtils.create(Users,Product,Product_Orders,Orders)
-            commit()
+
+        }
+        transaction {
+            Product
+                .slice(Product.price.sum())
+                .selectAll()
+                .map { row ->
+                    println(""" 
+            totalPrice = ${row[Product.price.sum()]?:-1}
+        """.trimIndent())
+                }
+
         }
     }
 

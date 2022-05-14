@@ -1,0 +1,35 @@
+POST http://localhost:8080/api/customers
+Content-Type: application/json
+
+{
+"id":1,
+"firstName":"Yelzhan",
+"lastName":"Ayupov",
+"address":"orbita",
+"city":"Almaty"
+}
+###
+DELETE http://localhost:8080/api/customers/1
+###
+POST http://localhost:8080/api/products
+Content-Type: application/json
+
+{
+  "id": 1,
+  "title": "hamburger",
+  "description": "burger and brigle",
+  "price": 570
+}
+###
+DELETE http://localhost:8080/api/products/1
+###
+
+POST localhost:8080/api/orders
+Content-Type: application/json
+
+{
+  "id": 1,
+  "userId":2,
+  "totalPrice": 250,
+  "productQuantity": 6
+}
